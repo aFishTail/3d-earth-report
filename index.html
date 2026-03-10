@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Earth Dashboard</title>
+    <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body>
+    <!-- 3D Canvas 容器 -->
+    <div id="canvas-container"></div>
+
+    <!-- 加载进度 -->
+    <div id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading Earth...</div>
+            <div class="loading-bar">
+                <div class="loading-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 左侧面板 -->
+    <div class="panel panel-left">
+        <div class="panel-card">
+            <div class="card-header">
+                <span class="card-icon">&#127760;</span>
+                <span class="card-title">全球用户总量</span>
+            </div>
+            <div class="card-value" data-target="1285600">0</div>
+            <div class="card-trend trend-up">&#9650; 12.5% 较上月</div>
+        </div>
+
+        <div class="panel-card">
+            <div class="card-header">
+                <span class="card-icon">&#128200;</span>
+                <span class="card-title">实时在线</span>
+            </div>
+            <div class="card-value" data-target="86432">0</div>
+            <div class="card-trend trend-up">&#9650; 8.3% 较昨日</div>
+        </div>
+
+        <div class="panel-card">
+            <div class="card-header">
+                <span class="card-icon">&#128225;</span>
+                <span class="card-title">今日请求量</span>
+            </div>
+            <div class="card-value" data-target="5621800">0</div>
+            <div class="card-trend trend-up">&#9650; 23.1% 较昨日</div>
+        </div>
+
+        <div class="panel-card">
+            <div class="card-header">
+                <span class="card-icon">&#9889;</span>
+                <span class="card-title">平均响应时间</span>
+            </div>
+            <div class="card-value-small">32<span class="card-unit">ms</span></div>
+            <div class="card-trend trend-down">&#9660; 5.2% 较上周</div>
+        </div>
+    </div>
+
+    <!-- 右侧面板 -->
+    <div class="panel panel-right">
+        <div class="panel-card">
+            <div class="card-header">
+                <span class="card-icon">&#127470;&#127475;</span>
+                <span class="card-title">亚太地区</span>
+            </div>
+            <div class="card-value" data-target="425800">0</div>
+            <div class="card-subtitle">活跃节点: 128</div>
+            <div class="mini-bar-chart">
+                <div class="mini-bar" style="--h: 60%"></div>
+                <div class="mini-bar" style="--h: 80%"></div>
+                <div class="mini-bar" style="--h: 45%"></div>
+                <div class="mini-bar" style="--h: 90%"></div>
+                <div class="mini-bar" style="--h: 70%"></div>
+                <div class="mini-bar" style="--h: 55%"></div>
+                <div class="mini-bar" style="--h: 85%"></div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="card-header">
+                <span class="card-icon">&#127466;&#127482;</span>
+                <span class="card-title">欧洲地区</span>
+            </div>
+            <div class="card-value" data-target="368200">0</div>
+            <div class="card-subtitle">活跃节点: 96</div>
+            <div class="mini-bar-chart">
+                <div class="mini-bar" style="--h: 75%"></div>
+                <div class="mini-bar" style="--h: 50%"></div>
+                <div class="mini-bar" style="--h: 65%"></div>
+                <div class="mini-bar" style="--h: 80%"></div>
+                <div class="mini-bar" style="--h: 40%"></div>
+                <div class="mini-bar" style="--h: 70%"></div>
+                <div class="mini-bar" style="--h: 60%"></div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="card-header">
+                <span class="card-icon">&#127482;&#127480;</span>
+                <span class="card-title">北美地区</span>
+            </div>
+            <div class="card-value" data-target="312500">0</div>
+            <div class="card-subtitle">活跃节点: 84</div>
+            <div class="mini-bar-chart">
+                <div class="mini-bar" style="--h: 85%"></div>
+                <div class="mini-bar" style="--h: 70%"></div>
+                <div class="mini-bar" style="--h: 55%"></div>
+                <div class="mini-bar" style="--h: 60%"></div>
+                <div class="mini-bar" style="--h: 90%"></div>
+                <div class="mini-bar" style="--h: 75%"></div>
+                <div class="mini-bar" style="--h: 50%"></div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="card-header">
+                <span class="card-icon">&#127757;</span>
+                <span class="card-title">其他地区</span>
+            </div>
+            <div class="card-value" data-target="179100">0</div>
+            <div class="card-subtitle">活跃节点: 52</div>
+            <div class="mini-bar-chart">
+                <div class="mini-bar" style="--h: 40%"></div>
+                <div class="mini-bar" style="--h: 55%"></div>
+                <div class="mini-bar" style="--h: 70%"></div>
+                <div class="mini-bar" style="--h: 35%"></div>
+                <div class="mini-bar" style="--h: 60%"></div>
+                <div class="mini-bar" style="--h: 45%"></div>
+                <div class="mini-bar" style="--h: 50%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顶部标题 -->
+    <div class="top-bar">
+        <h1 class="dashboard-title">GLOBAL DATA VISUALIZATION</h1>
+        <div class="dashboard-time" id="dashboard-time"></div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
