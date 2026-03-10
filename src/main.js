@@ -3,6 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createEarth } from './earth.js';
 import { createAtmosphere, createStarField } from './atmosphere.js';
 import { createFlyLines } from './flylines.js';
+import { createChinaMap } from './chinaMap.js';
+import { createInteraction, VIEW_GLOBE } from './interaction.js';
 import './style.css';
 
 // ============================================
@@ -75,6 +77,7 @@ const earth = createEarth(scene, loadingManager);
 const atmosphere = createAtmosphere(scene);
 const starField = createStarField(scene, loadingManager);
 const flyLines = createFlyLines(earth.earthGroup);
+const chinaMap = createChinaMap(scene);
 
 // ============================================
 // Controls
@@ -87,6 +90,20 @@ controls.minDistance = 8;
 controls.maxDistance = 25;
 controls.autoRotate = false; // We handle rotation in earth.js
 controls.rotateSpeed = 0.5;
+
+// ============================================
+// Interaction (click china to drill down)
+// ============================================
+const interaction = createInteraction({
+  camera,
+  renderer,
+  controls,
+  scene,
+  earth,
+  atmosphere,
+  flyLines,
+  chinaMap,
+});
 
 // ============================================
 // Number counter animation
@@ -159,9 +176,15 @@ function animate() {
   const delta = clock.getDelta();
 
   controls.update();
-  earth.update(delta);
+  interaction.update(delta);
+
+  if (interaction.currentView === VIEW_GLOBE) {
+    earth.update(delta);
+    flyLines.update(delta);
+  }
+
   atmosphere.update(camera);
-  flyLines.update(delta);
+  chinaMap.update(delta);
 
   renderer.render(scene, camera);
 }
