@@ -1,18 +1,21 @@
-import * as THREE from 'three';
-import { CHINA_BBOX } from './chinaGeo.js';
+import * as THREE from "three";
+import { CHINA_BBOX } from "./chinaGeo.js";
 
 /**
  * View states
  */
-export const VIEW_GLOBE = 'globe';
-export const VIEW_CHINA = 'china';
+export const VIEW_GLOBE = "globe";
+export const VIEW_CHINA = "china";
 
 /**
  * Convert a 3D hit point on the earth sphere back to lat/lng
  */
 function vector3ToLatLng(localPoint, radius) {
-  const lat = 90 - Math.acos(Math.max(-1, Math.min(1, localPoint.y / radius))) * (180 / Math.PI);
-  const lng = (Math.atan2(localPoint.z, -localPoint.x) * (180 / Math.PI)) - 180;
+  const lat =
+    90 -
+    Math.acos(Math.max(-1, Math.min(1, localPoint.y / radius))) *
+      (180 / Math.PI);
+  const lng = Math.atan2(localPoint.z, -localPoint.x) * (180 / Math.PI) - 180;
   // Normalize lng to [-180, 180]
   const normalizedLng = ((lng + 540) % 360) - 180;
   return { lat, lng: normalizedLng };
@@ -85,10 +88,10 @@ export function createInteraction({
   renderer,
   controls,
   scene,
-  earth,       // { earthGroup, earthMesh, cloudMesh, ... }
-  atmosphere,  // { atmosphereMesh, ... }
-  flyLines,    // { flyLineGroup, ... }
-  chinaMap,    // { chinaGroup, provinceMeshes, show(), hide(), ... }
+  earth, // { earthGroup, earthMesh, cloudMesh, ... }
+  atmosphere, // { atmosphereMesh, ... }
+  flyLines, // { flyLineGroup, ... }
+  chinaMap, // { chinaGroup, provinceMeshes, show(), hide(), ... }
 }) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -108,7 +111,7 @@ export function createInteraction({
   const chinaCameraPos = new THREE.Vector3(0, 14, 6);
   const chinaCameraTarget = new THREE.Vector3(0, 0, 0);
 
-  const backBtn = document.getElementById('back-to-globe');
+  const backBtn = document.getElementById("back-to-globe");
 
   // ---- Event Handlers ----
 
@@ -151,7 +154,13 @@ export function createInteraction({
     const localPoint = earth.earthMesh.worldToLocal(hitPoint);
     const { lat, lng } = vector3ToLatLng(localPoint, 5);
 
-    console.log('Click lat/lng:', lat.toFixed(2), lng.toFixed(2), 'isChina:', isInChina(lat, lng));
+    console.log(
+      "Click lat/lng:",
+      lat.toFixed(2),
+      lng.toFixed(2),
+      "isChina:",
+      isInChina(lat, lng),
+    );
 
     if (isInChina(lat, lng)) {
       transitionToChina();
@@ -166,49 +175,56 @@ export function createInteraction({
     savedGlobeCamera.target.copy(controls.target);
 
     // Animate camera to china view
-    cameraAnim.start(camera, controls, chinaCameraPos, chinaCameraTarget, 1.5, () => {
-      // After camera arrives: hide globe, show china map
-      earth.earthGroup.visible = false;
-      atmosphere.atmosphereMesh.visible = false;
-      flyLines.flyLineGroup.visible = false;
+    cameraAnim.start(
+      camera,
+      controls,
+      chinaCameraPos,
+      chinaCameraTarget,
+      1.5,
+      () => {
+        // After camera arrives: hide globe, show china map
+        earth.earthGroup.visible = false;
+        atmosphere.atmosphereMesh.visible = false;
+        flyLines.flyLineGroup.visible = false;
 
-      // Add extra light for china map
-      if (!scene.getObjectByName('chinaLight')) {
-        const mapLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        mapLight.position.set(5, 10, 5);
-        mapLight.name = 'chinaLight';
-        scene.add(mapLight);
-        const mapAmbient = new THREE.AmbientLight(0x334466, 1.0);
-        mapAmbient.name = 'chinaAmbient';
-        scene.add(mapAmbient);
-      }
+        // Add extra light for china map
+        if (!scene.getObjectByName("chinaLight")) {
+          const mapLight = new THREE.DirectionalLight(0xffffff, 1.5);
+          mapLight.position.set(5, 10, 5);
+          mapLight.name = "chinaLight";
+          scene.add(mapLight);
+          const mapAmbient = new THREE.AmbientLight(0x334466, 1.0);
+          mapAmbient.name = "chinaAmbient";
+          scene.add(mapAmbient);
+        }
 
-      chinaMap.show();
-      currentView = VIEW_CHINA;
-      transitioning = false;
+        chinaMap.show();
+        currentView = VIEW_CHINA;
+        transitioning = false;
 
-      controls.minDistance = 5;
-      controls.maxDistance = 25;
-      controls.enableRotate = true;
-      controls.maxPolarAngle = Math.PI / 2.2;
+        controls.minDistance = 5;
+        controls.maxDistance = 25;
+        controls.enableRotate = true;
+        controls.maxPolarAngle = Math.PI / 2.2;
 
-      if (backBtn) backBtn.classList.add('visible');
-    });
+        if (backBtn) backBtn.classList.add("visible");
+      },
+    );
   }
 
   function transitionToGlobe() {
     if (transitioning || currentView !== VIEW_CHINA) return;
     transitioning = true;
 
-    if (backBtn) backBtn.classList.remove('visible');
+    if (backBtn) backBtn.classList.remove("visible");
 
     chinaMap.hide();
 
     // Short delay for china map exit animation, then switch
     setTimeout(() => {
       // Remove extra lights
-      const chinaLight = scene.getObjectByName('chinaLight');
-      const chinaAmbient = scene.getObjectByName('chinaAmbient');
+      const chinaLight = scene.getObjectByName("chinaLight");
+      const chinaAmbient = scene.getObjectByName("chinaAmbient");
       if (chinaLight) scene.remove(chinaLight);
       if (chinaAmbient) scene.remove(chinaAmbient);
 
@@ -220,26 +236,33 @@ export function createInteraction({
       controls.maxDistance = 25;
       controls.maxPolarAngle = Math.PI;
 
-      cameraAnim.start(camera, controls, savedGlobeCamera.position, savedGlobeCamera.target, 1.5, () => {
-        currentView = VIEW_GLOBE;
-        transitioning = false;
-      });
+      cameraAnim.start(
+        camera,
+        controls,
+        savedGlobeCamera.position,
+        savedGlobeCamera.target,
+        1.5,
+        () => {
+          currentView = VIEW_GLOBE;
+          transitioning = false;
+        },
+      );
     }, 400);
   }
 
   // ---- Bind events ----
-  renderer.domElement.addEventListener('mousemove', onMouseMove);
-  renderer.domElement.addEventListener('click', onClick);
+  renderer.domElement.addEventListener("mousemove", onMouseMove);
+  renderer.domElement.addEventListener("click", onClick);
 
   if (backBtn) {
-    backBtn.addEventListener('click', (e) => {
+    backBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       transitionToGlobe();
     });
   }
 
   // Cursor style
-  renderer.domElement.addEventListener('mousemove', () => {
+  renderer.domElement.addEventListener("mousemove", () => {
     if (currentView === VIEW_GLOBE) {
       raycaster.setFromCamera(mouse, camera);
       const hits = raycaster.intersectObject(earth.earthMesh);
@@ -247,20 +270,27 @@ export function createInteraction({
         const hp = hits[0].point.clone();
         const lp = earth.earthMesh.worldToLocal(hp);
         const { lat, lng } = vector3ToLatLng(lp, 5);
-        renderer.domElement.style.cursor = isInChina(lat, lng) ? 'pointer' : 'default';
+        renderer.domElement.style.cursor = isInChina(lat, lng)
+          ? "pointer"
+          : "default";
       } else {
-        renderer.domElement.style.cursor = 'default';
+        renderer.domElement.style.cursor = "default";
       }
     } else if (currentView === VIEW_CHINA) {
       raycaster.setFromCamera(mouse, camera);
       const hits = raycaster.intersectObjects(chinaMap.provinceMeshes);
-      renderer.domElement.style.cursor = hits.length > 0 ? 'pointer' : 'default';
+      renderer.domElement.style.cursor =
+        hits.length > 0 ? "pointer" : "default";
     }
   });
 
   return {
-    get currentView() { return currentView; },
-    get isTransitioning() { return transitioning; },
+    get currentView() {
+      return currentView;
+    },
+    get isTransitioning() {
+      return transitioning;
+    },
     transitionToGlobe,
 
     update(delta) {

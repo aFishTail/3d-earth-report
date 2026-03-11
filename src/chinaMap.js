@@ -1,19 +1,44 @@
-import * as THREE from 'three';
-import { provinces, CHINA_CENTER } from './chinaGeo.js';
+import * as THREE from "three";
+import { provinces, CHINA_CENTER } from "./chinaGeo.js";
 
 // Province color palette
 const PROVINCE_COLORS = [
-  '#1a5276', '#1b4f72', '#154360', '#1a3c5e', '#17394d',
-  '#1c4966', '#163d55', '#1e5f8a', '#125270', '#1a4b6e',
-  '#164a6a', '#1d567a', '#1b5e85', '#134965', '#1a4060',
-  '#16435a', '#1e6b8f', '#174e6f', '#1a5575', '#155570',
-  '#1c4860', '#1b5068', '#13536b', '#1e5a7e', '#164d65',
-  '#1a4258', '#175d80', '#1b4565', '#1e5875', '#144a62',
-  '#1c5570', '#195972',
+  "#1a5276",
+  "#1b4f72",
+  "#154360",
+  "#1a3c5e",
+  "#17394d",
+  "#1c4966",
+  "#163d55",
+  "#1e5f8a",
+  "#125270",
+  "#1a4b6e",
+  "#164a6a",
+  "#1d567a",
+  "#1b5e85",
+  "#134965",
+  "#1a4060",
+  "#16435a",
+  "#1e6b8f",
+  "#174e6f",
+  "#1a5575",
+  "#155570",
+  "#1c4860",
+  "#1b5068",
+  "#13536b",
+  "#1e5a7e",
+  "#164d65",
+  "#1a4258",
+  "#175d80",
+  "#1b4565",
+  "#1e5875",
+  "#144a62",
+  "#1c5570",
+  "#195972",
 ];
 
-const HOVER_COLOR = '#00d4ff';
-const BORDER_COLOR = '#00a5cc';
+const HOVER_COLOR = "#00d4ff";
+const BORDER_COLOR = "#00a5cc";
 
 /**
  * Project [lng, lat] to flat XZ plane coordinates for map display
@@ -64,15 +89,15 @@ function createProvinceBorder(coords) {
  * Create a text label sprite for a province
  */
 function createLabel(name, center) {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = 256;
   canvas.height = 64;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
 
-  ctx.font = 'bold 28px Microsoft YaHei, PingFang SC, sans-serif';
-  ctx.fillStyle = '#ffffff';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+  ctx.font = "bold 28px Microsoft YaHei, PingFang SC, sans-serif";
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
   ctx.fillText(name, 128, 32);
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -129,7 +154,7 @@ export function createChinaMap(scene) {
 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.userData = {
-      type: 'province',
+      type: "province",
       name: prov.name,
       index,
       baseColor: color,
@@ -166,7 +191,7 @@ export function createChinaMap(scene) {
   scene.add(chinaGroup);
 
   // Tooltip element
-  const tooltip = document.getElementById('province-tooltip');
+  const tooltip = document.getElementById("province-tooltip");
 
   let hoveredMesh = null;
 
@@ -195,22 +220,24 @@ export function createChinaMap(scene) {
       if (hoveredMesh) {
         hoveredMesh.material.color.set(hoveredMesh.userData.baseColor);
         hoveredMesh.material.emissive.set(
-          new THREE.Color(hoveredMesh.userData.baseColor).multiplyScalar(0.15)
+          new THREE.Color(hoveredMesh.userData.baseColor).multiplyScalar(0.15),
         );
         hoveredMesh.position.y = 0;
         hoveredMesh = null;
       }
 
-      if (tooltip) tooltip.style.display = 'none';
+      if (tooltip) tooltip.style.display = "none";
 
       const hit = intersects.find(
-        (i) => i.object.userData && i.object.userData.type === 'province'
+        (i) => i.object.userData && i.object.userData.type === "province",
       );
 
       if (hit) {
         hoveredMesh = hit.object;
         hoveredMesh.material.color.set(HOVER_COLOR);
-        hoveredMesh.material.emissive.set(new THREE.Color(HOVER_COLOR).multiplyScalar(0.3));
+        hoveredMesh.material.emissive.set(
+          new THREE.Color(HOVER_COLOR).multiplyScalar(0.3),
+        );
         hoveredMesh.position.y = 0.15;
 
         if (tooltip) {
@@ -220,7 +247,7 @@ export function createChinaMap(scene) {
             <div class="tooltip-row">用户量: <span>${d.value.toLocaleString()}</span></div>
             <div class="tooltip-row">节点数: <span>${d.nodes}</span></div>
           `;
-          tooltip.style.display = 'block';
+          tooltip.style.display = "block";
         }
       }
     },
@@ -229,7 +256,7 @@ export function createChinaMap(scene) {
      * Update tooltip position to follow mouse cursor
      */
     updateTooltipPosition(mouseX, mouseY) {
-      if (tooltip && tooltip.style.display === 'block') {
+      if (tooltip && tooltip.style.display === "block") {
         tooltip.style.left = `${mouseX + 15}px`;
         tooltip.style.top = `${mouseY + 15}px`;
       }

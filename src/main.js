@@ -1,18 +1,18 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createEarth } from './earth.js';
-import { createAtmosphere, createStarField } from './atmosphere.js';
-import { createFlyLines } from './flylines.js';
-import { createChinaMap } from './chinaMap.js';
-import { createInteraction, VIEW_GLOBE } from './interaction.js';
-import './style.css';
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { createEarth } from "./earth.js";
+import { createAtmosphere, createStarField } from "./atmosphere.js";
+import { createFlyLines } from "./flylines.js";
+import { createChinaMap } from "./chinaMap.js";
+import { createInteraction, VIEW_GLOBE } from "./interaction.js";
+import "./style.css";
 
 // ============================================
 // Scene Setup
 // ============================================
-const container = document.getElementById('canvas-container');
-const loadingOverlay = document.getElementById('loading-overlay');
-const loadingBarFill = document.querySelector('.loading-bar-fill');
+const container = document.getElementById("canvas-container");
+const loadingOverlay = document.getElementById("loading-overlay");
+const loadingBarFill = document.querySelector(".loading-bar-fill");
 
 const scene = new THREE.Scene();
 
@@ -20,14 +20,14 @@ const camera = new THREE.PerspectiveCamera(
   45,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  1000,
 );
 camera.position.set(0, 2, 16);
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
   alpha: false,
-  powerPreference: 'high-performance',
+  powerPreference: "high-performance",
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -54,9 +54,9 @@ loadingManager.onProgress = (_url, loaded, total) => {
 };
 
 loadingManager.onLoad = () => {
-  loadingBarFill.style.width = '100%';
+  loadingBarFill.style.width = "100%";
   setTimeout(() => {
-    loadingOverlay.classList.add('hidden');
+    loadingOverlay.classList.add("hidden");
   }, 500);
 };
 
@@ -109,7 +109,7 @@ const interaction = createInteraction({
 // Number counter animation
 // ============================================
 function animateCounters() {
-  const counters = document.querySelectorAll('.card-value[data-target]');
+  const counters = document.querySelectorAll(".card-value[data-target]");
   counters.forEach((counter) => {
     const target = parseInt(counter.dataset.target, 10);
     const duration = 2000;
@@ -132,9 +132,9 @@ function animateCounters() {
 
 // Start counters after loading
 loadingManager.onLoad = () => {
-  loadingBarFill.style.width = '100%';
+  loadingBarFill.style.width = "100%";
   setTimeout(() => {
-    loadingOverlay.classList.add('hidden');
+    loadingOverlay.classList.add("hidden");
     animateCounters();
   }, 500);
 };
@@ -144,16 +144,16 @@ loadingManager.onLoad = () => {
 // ============================================
 function updateClock() {
   const now = new Date();
-  const str = now.toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+  const str = now.toLocaleString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hour12: false,
   });
-  document.getElementById('dashboard-time').textContent = str;
+  document.getElementById("dashboard-time").textContent = str;
 }
 updateClock();
 setInterval(updateClock, 1000);
@@ -161,7 +161,7 @@ setInterval(updateClock, 1000);
 // ============================================
 // Resize
 // ============================================
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
